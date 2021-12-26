@@ -49,6 +49,7 @@ namespace DevIO.Api.Controllers
             {
                 return CustomResponse(produtoViewModel);
             }
+            produtoViewModel.Imagem = imagemNome;
             await _produtoService.Adicionar(_mapper.Map<Produto>(produtoViewModel));
             return CustomResponse(produtoViewModel);
         }
@@ -69,12 +70,12 @@ namespace DevIO.Api.Controllers
 
         private bool UpdalodArquivo(string arquivo, string imgNome)
         {
-            var imageDataByteArray = Convert.FromBase64String(arquivo);
-            if (arquivo == null || arquivo.Length <= 0)
+            if (string.IsNullOrEmpty(arquivo))
             {
                 NotificarErro("Forneça uma imagem para este produto!");
                 return false;
             }
+            var imageDataByteArray = Convert.FromBase64String(arquivo);
             var filepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/imagens", imgNome);
             if (System.IO.File.Exists(filepath))
             {
