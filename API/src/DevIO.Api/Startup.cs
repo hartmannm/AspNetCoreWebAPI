@@ -1,3 +1,4 @@
+using DevIO.Api.Configuration;
 using DevIO.Data.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -20,11 +21,10 @@ namespace DevIO.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<MeuDbContext>(options =>
-            {
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-            });
+            services.AddDbContext<MeuDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddAutoMapper(typeof(Startup));
             services.AddControllers();
+            services.ResolveDependencies();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DevIO.Api", Version = "v1" });
