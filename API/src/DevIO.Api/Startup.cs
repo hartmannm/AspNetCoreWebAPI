@@ -26,6 +26,13 @@ namespace DevIO.Api
             services.AddAutoMapper(typeof(Startup));
             services.AddControllers();
             services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
+            services.AddCors(options =>
+            {
+                options.AddPolicy("Development", builder => builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+            });
             services.ResolveDependencies();
             services.AddSwaggerGen(c =>
             {
@@ -45,7 +52,7 @@ namespace DevIO.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseCors("Development");
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
