@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using DevIO.Api.Extensions;
 using DevIO.Api.ViewModels;
 using DevIO.Business.Interfaces;
 using DevIO.Business.Interfaces.Repositories;
 using DevIO.Business.Interfaces.Services;
 using DevIO.Business.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -54,6 +56,21 @@ namespace DevIO.Api.Controllers
             return CustomResponse(produtoViewModel);
         }
 
+        [HttpPost("adicionar")]
+        [RequestSizeLimit(4000000)]
+        public async Task<ActionResult<ProdutoViewModel>> AdicionarAlternativo([ModelBinder(BinderType = typeof(ProdutoModelBinder))] ProdutoImagemViewModel produtoViewModel)
+        {
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
+            var imgPrefix = $"{Guid.NewGuid()}_";
+            if (!await UploadAlternativo(produtoViewModel.ImagemUpload, imgPrefix))
+            {
+                return CustomResponse(produtoViewModel);
+            }
+            produtoViewModel.Imagem = imgPrefix + produtoViewModel.ImagemUpload.FileName;
+            await _produtoService.Adicionar(_mapper.Map<Produto>(produtoViewModel));
+            return CustomResponse(produtoViewModel);
+        }
+
         [HttpDelete("{id:guid}")]
         public async Task<ActionResult<ProdutoViewModel>> Excluir(Guid id)
         {
@@ -83,6 +100,26 @@ namespace DevIO.Api.Controllers
                 return false;
             }
             System.IO.File.WriteAllBytes(filepath, imageDataByteArray);
+            return true;
+        }
+
+        private async Task<bool> UploadAlternativo(IFormFile arquivo, string imgPrefix)
+        {
+            if (arquivo == null || arquivo.Length <= 0)
+            {
+                NotificarErro("Forneça uma imagem para este produto!");
+                return false;
+            }
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/imagens", imgPrefix + arquivo.FileName);
+            if (System.IO.File.Exists(path))
+            {
+                NotificarErro("Já existe um arquivo com este nome!");
+                return false;
+            }
+            using (var stream = new FileStream(path, FileMode.Create))
+            {
+                await arquivo.CopyToAsync(stream);
+            }
             return true;
         }
     }
