@@ -4,6 +4,7 @@ using DevIO.Business.Interfaces;
 using DevIO.Business.Interfaces.Repositories;
 using DevIO.Business.Interfaces.Services;
 using DevIO.Business.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace DevIO.Api.Controllers
 {
+    [Authorize]
     [Route("api/fornecedores")]
     public class FornecedoresController : MainController
     {
