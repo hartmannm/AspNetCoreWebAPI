@@ -1,3 +1,4 @@
+
 using DevIO.Api.Configuration;
 using DevIO.Data.Context;
 using Microsoft.AspNetCore.Builder;
@@ -22,6 +23,7 @@ namespace DevIO.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<MeuDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddIdentityConfiguration(Configuration);
             services.AddAutoMapper(typeof(Startup));
             services.WebApiConfig();
             services.ResolveDependencies();

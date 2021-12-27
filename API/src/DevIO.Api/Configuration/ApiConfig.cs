@@ -24,6 +24,7 @@ namespace DevIO.Api.Configuration
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseCors("Development");
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
