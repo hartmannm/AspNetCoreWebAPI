@@ -30,8 +30,7 @@ namespace DevIO.Api
             {
                 options.AddPolicy("Development", builder => builder.AllowAnyOrigin()
                     .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials());
+                    .AllowAnyHeader());
             });
             services.ResolveDependencies();
             services.AddSwaggerGen(c =>
