@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Net.Http.Headers;
 
 namespace DevIO.Api.Configuration
 {
@@ -12,8 +13,15 @@ namespace DevIO.Api.Configuration
             services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
             services.AddCors(options =>
             {
-                options.AddPolicy("Development", builder => builder.AllowAnyOrigin()
+                options.AddPolicy("Development", builder => builder
+                    .AllowAnyOrigin()
                     .AllowAnyMethod()
+                    .AllowAnyHeader());
+                options.AddPolicy("Production", builder => builder
+                    .WithMethods("GET")
+                    .WithOrigins("http://desenvolvedori.io")
+                    .SetIsOriginAllowedToAllowWildcardSubdomains()
+                    .WithHeaders(HeaderNames.ContentType, "x-custom-header")
                     .AllowAnyHeader());
             });
             return services;
@@ -23,7 +31,6 @@ namespace DevIO.Api.Configuration
         {
             app.UseHttpsRedirection();
             app.UseRouting();
-            app.UseCors("Development");
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
