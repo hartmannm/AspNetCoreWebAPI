@@ -44,6 +44,7 @@ namespace DevIO.Api
                 app.UseCors("Production");
                 app.UseHsts();
             }
+            app.UseMiddleware<ExceptionMiddleware>();
             app.UseMvcConfiguration();
             //app.UseLoggingConfiguration();
             app.UseSwaggerConfig(provider);
