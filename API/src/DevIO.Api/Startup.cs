@@ -3,11 +3,11 @@ using DevIO.Api.Configuration;
 using DevIO.Data.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 
 namespace DevIO.Api
 {
@@ -26,21 +26,16 @@ namespace DevIO.Api
             services.AddIdentityConfiguration(Configuration);
             services.AddAutoMapper(typeof(Startup));
             services.WebApiConfig();
+            services.AddSwaggerConfig();
             services.ResolveDependencies();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "DevIO.Api", Version = "v1" });
-            });
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)
         {
             if (env.IsDevelopment())
             {
                 app.UseCors("Development");
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DevIO.Api v1"));
             }
             else
             {
@@ -48,6 +43,7 @@ namespace DevIO.Api
                 app.UseHsts();
             }
             app.UseMvcConfiguration();
+            app.UseSwaggerConfig(provider);
         }
     }
 }
