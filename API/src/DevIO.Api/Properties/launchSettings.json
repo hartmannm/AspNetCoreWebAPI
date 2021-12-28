@@ -20,7 +20,7 @@
     "IIS Prod": {
       "commandName": "IISExpress",
       "launchBrowser": false,
-      "launchUrl": "api/fornecedores",
+      "launchUrl": "api/v1/fornecedores",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production"
       }
