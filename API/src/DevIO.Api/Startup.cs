@@ -1,5 +1,6 @@
 
 using DevIO.Api.Configuration;
+using DevIO.Api.Extensions;
 using DevIO.Data.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,6 +28,7 @@ namespace DevIO.Api
             services.AddAutoMapper(typeof(Startup));
             services.WebApiConfig();
             services.AddSwaggerConfig();
+            //services.AddLoggingConfiguration();
             services.ResolveDependencies();
         }
 
@@ -43,6 +45,7 @@ namespace DevIO.Api
                 app.UseHsts();
             }
             app.UseMvcConfiguration();
+            //app.UseLoggingConfiguration();
             app.UseSwaggerConfig(provider);
         }
     }
